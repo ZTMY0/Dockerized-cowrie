@@ -1,0 +1,16 @@
+# Ignore Virtual Environment
+myenv/
+__pycache__/
+*.pyc
+
+# Ignore the Cowrie Source Code (We only want our configs)
+cowrie/
+cowrie-source/
+
+# Ignore large log files (only keep small samples)
+logs/*.json
+logs/*.log
+!logs/sample_cowrie.log
+
+# Ignore system files
+.DS_Store
