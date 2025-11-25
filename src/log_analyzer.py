@@ -5,7 +5,7 @@ import plotly.express as px
 
 # --- Configuration ---
 st.set_page_config(page_title="Cowrie SIEM", layout="wide")
-st.title("🛡️ Cowrie Honeypot: Custom SIEM Dashboard")
+st.title(" Cowrie Honeypot: SIEM Dashboard")
 
 # Cache data for 10 seconds (Simple cache reset)
 @st.cache_data(ttl=10)
@@ -85,7 +85,7 @@ if not df.empty:
     st.sidebar.header("Controls & Filters")
     
     # MANUAL REFRESH BUTTON (Triggers cache invalidation)
-    if st.sidebar.button("🔄 Refresh Logs"):
+    if st.sidebar.button(" Refresh Logs"):
         st.cache_data.clear()
         st.rerun()
 
@@ -138,7 +138,7 @@ if not df.empty:
         else: st.info("No usernames.")
 
     with c4:
-        st.subheader("Forensic Timeline (Commands)")
+        st.subheader("Commands Timeline")
         commands = df[df['type'] == "Command Execution"][['timestamp', 'command']].sort_values(by='timestamp', ascending=False)
         if not commands.empty: st.dataframe(commands, use_container_width=True, hide_index=True)
         else: st.success("No commands executed.")
