@@ -166,7 +166,7 @@ Chain PREROUTING (policy ACCEPT 3404 packets, 1034K bytes)
 ### Part 1: Infrastructure (Honeypot)
 ```bash
 # Clone the repository
-git clone [https://github.com/ZTMY0/Dockerized-cowrie.git](https://github.com/ZTMY0/Dockerized-cowrie.git)
+git clone[ https://github.com/iliasszrq/Dockerized-cowrie
 
 # Install Docker Engine and the Compose Plugin
 sudo apt install -y docker.io docker-compose-plugin
