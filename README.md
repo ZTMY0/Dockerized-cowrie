@@ -185,6 +185,6 @@ docker ps
 # Create virtual environement to isolate dependencies
 python3 -m venv myenv
 source myenv/bin/activate 
-pip install -r requirements.txt # Dashboard Reauirements
+pip install -r requirements.txt # Dashboard requirements
 python3 -m streamlit run src/log_analyzer.py # Launch
 ```
